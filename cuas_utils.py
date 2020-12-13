@@ -117,6 +117,7 @@ def loadData(f):
                 json.dumps(data,newfilehandle)
                 
                 newfilehandle.close()
+                print()
             
             
     return data
