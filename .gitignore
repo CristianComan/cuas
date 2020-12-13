@@ -1,0 +1,14 @@
+# Data folders
+Algemeen
+__pycache__
+Red Team
+
+
+# Jupyter notebook files
+*.ipynb
+
+
+# Miscellaneous files
+*.png
+*.kmz
+*.nc
