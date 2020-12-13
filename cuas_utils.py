@@ -100,6 +100,8 @@ def loadData(f):
         
         try:
             data = json.load(filehandle)
+            filehandle.close()
+            
         except:
             print('Could not load file {}. Read element by element.'.format(f))
             
@@ -107,8 +109,14 @@ def loadData(f):
             
             data = readJsonByElement(f)
             
+            nf = f[:-5] + '_corrected.json'
             
-            print('Save the corrected file with the name')
+            print('Save the corrected file with the name {}'.format(nf))
+            
+            with open(nf,'w') as newfilehandle:
+                json.dumps(data,newfilehandle)
+                
+                newfilehandle.close()
             
             
     return data
