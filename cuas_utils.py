@@ -81,7 +81,9 @@ def readJsonByElement(f):
             try:
                 data.append(json.loads(line))
             except:
+                
                 print('Incorrect json element in file {}'.format(f))
+                print('Element: {}'.format(line))
                                             
     filehandle.close()
        
@@ -111,20 +113,41 @@ def loadData(f):
             
             nf = f[:-5] + '_corrected.json'
             
-            print('Save the corrected file with the name {}'.format(nf))
+            if not os.path.isfile(nf):
             
-            with open(nf,'w') as newfilehandle:
-                json.dumps(data,newfilehandle)
+                print('Save the corrected file with the name {}'.format(nf))
+            
+                with open(nf,'w') as newfilehandle:
+                    json.dump(data,newfilehandle)
                 
-                newfilehandle.close()
-                print()
+                    newfilehandle.close()
+                    print('Corrected file saved')
             
             
     return data
             
             
-                
+def getTimeLimits(data):
+    '''
+    Given a json sensor file get the first and last time stamp in the file.
+    type data: list of dictionary elements as extracted from the sensor json file
+    rtype start: time.time object
+    rtype stop: time.time object
+    '''    
+    timeStamp = []
+    
+    for elem in data:
+        timeStamp.append(int(elem['time_stamp']['seconds']) + 1e-6*int(elem['time_stamp']['nanoseconds']))
+    
+    # check if the elements are ordered in time
+    
+    tmin = min(timeStamp)
+    tmax = max(timeStamp)
+    
+    if tmin != timeStamp[0] or tmax != timeStamp[-1]:
+        print('Elemnts not in time order!')
         
+    return tmin, tmax
     
 
 def correctJson(fnameList):
@@ -149,7 +172,8 @@ def correctJson(fnameList):
             file.seek(-1,2)
             
             # check if the last closing characters are there
-            
+            f dictionary elements as extracted from the sensor json file
+    rtype start: time
             
             if file.read(1) != "}":
             # add closing tags
@@ -169,14 +193,24 @@ if __name__ == "__main__":
     
     jsonFile = lofp[0]
     
+    data = loadData(jsonFile)
+    
+    tmin, tmax = getTimeLimits(data)
+    
+    print('min time {} and max time {}'.format(tmin,tmax))
+    
+    
+    
+    '''
     print(jsonFile)
     
     data = readJsonByElement(jsonFile)
     
     filehandle = open(jsonFile,'r')
     data = json.load(filehandle)
-    print(data)
-
+    print(data)print(''.format)
+    '''
+    
     # read line by line
     '''
     f = open("./Red Team/SensorData/2020/10/01/11_00_00_sbs-2.json",'r')
